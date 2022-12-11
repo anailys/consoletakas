@@ -1,39 +1,7 @@
 <template>
   <v-container>
     <v-row class="mt-6">
-      <!-- <v-col cols="12" md="8">
-        <v-card class="background-one">
-          <v-row>
-            <v-col align="center">
-              <h1 class="display-1 font-weight-bold white--text">
-                ¿Quién esta publicando?
-              </h1>
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col cols="10" offset="1">
-              <v-simple-table dark class="background-one white--text">
-                <template v-slot:default>
-                  <thead>
-                    <tr>
-                      <th class="white--text text-left">Nombre</th>
-                      <th class="white--text text-left">Publicaciones</th>
-                      <th class="white--text text-left">Takasteos</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr v-for="(item, i) in users" :key="'user_' + i">
-                      <td>{{ item.name }}</td>
-                      <td>{{ item.publications }}</td>
-                      <td>{{ item.takasting }}</td>
-                    </tr>
-                  </tbody>
-                </template>
-              </v-simple-table>
-            </v-col>
-          </v-row>
-        </v-card>
-      </v-col> -->
+      
       <v-col cols="8" offset="2" class="">
         <v-row class="mb-2">
           <v-col cols="12">
@@ -77,55 +45,45 @@
               </v-card-text>
             </v-card>
           </v-col>
+         
         </v-row>
-        <!-- <v-row class="mb-2">
-          <v-col cols="12" class="">
-            <v-card class="background-one">
-              <v-card-title
-                ><h4 class="font-weight-bold white--text">
-                  Categorías mas interesadas
-                </h4></v-card-title
-              >
-              <v-divider></v-divider>
-              <v-card-text>
-                <v-simple-table dark class="background-one white--text">
-                  <template v-slot:default>
-                    <thead>
-                      <tr>
-                        <th class="white--text text-left">Nombre</th>
-                        <th class="white--text text-left">Me interesa</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr
-                        v-for="(item, i) in most_interested_categories"
-                        :key="'interested_' + i"
-                      >
-                        <td>{{ item.name }}</td>
-                        <td>{{ item.interested }}</td>
-                      </tr>
-                    </tbody>
-                  </template>
-                </v-simple-table>
-              </v-card-text>
-            </v-card>
-          </v-col>
-        </v-row> -->
+      </v-col>
+      <v-col offset-md="2" cols="8" class="d-flex justify-center align-center">
+        <PaginatorInfo :paginator="paginator" :key="paginator.key" />
+      </v-col>
+      <v-col offset-md="2" cols="8" class="d-flex justify-center align-center">
+        <Paginator
+          class="mt-1"
+          @onChangePage="onChangePage"
+          :key="paginator.key"
+          :total-items="paginator.total_items"
+          :max-buttons="paginator.max_buttons"
+          :current-page="paginator.current_page"
+          :total-pages="paginator.total_pages"
+          :items-per-page="paginator.items_per_page"
+        />
       </v-col>
     </v-row>
   </v-container>
 </template>
 <script>
 import TakasController from "../../controllers/takas/TakasController";
+import Paginator from "../../components/utils/Paginator";
+import PaginatorInfo from "../../components/utils/PaginatorInfo.vue";
 export default {
+  components: {
+    Paginator,
+    PaginatorInfo,
+  },
   data: () => ({
+    
     paginator: {
       key: 0,
       total_items: -1,
       max_buttons: 1,
       current_page: 1,
       total_pages: -1,
-      items_per_page: 5,
+      items_per_page: 2,
     },
     searcher: "",
     filter_by_active_items: true,
@@ -161,22 +119,6 @@ export default {
         this.searcher,
         params
       );
-      console.log(response);
-      return response;
-    },
-    async onChangePage(page) {
-      this.paginator.current_page = page;
-      this.items = await this.list();
-      this.paginator.key++;
-    },
-    async list(params) {
-      console.log(this.$route);
-      let response = await TakasController.getPublications(
-        this.$route.params.user_id,
-        this.paginator,
-        this.searcher,
-        params
-      );
       if (response.status == 200) {
         console.log(response.data);
         this.paginator.current_page = response.data.data.current_page;
@@ -184,12 +126,18 @@ export default {
         this.paginator.total_items = response.data.data.total_items;
         this.paginator.total_pages = response.data.data.total_pages;
         this.paginator.key++;
-        return response.data.data.list_publications.publicatinos;
+        return response.data.data.top_taksteos.takasteos;
       } else {
         console.log(response);
         alert("Ha ocurrido un error inesperado");
       }
     },
+    async onChangePage(page) {
+      this.paginator.current_page = page;
+      this.items = await this.list();
+      this.paginator.key++;
+    },
+    
     changeStatusItem(item, i) {
       this.selected_item = item;
       this.selected_key = i;
@@ -238,20 +186,7 @@ export default {
   watch: {
     "dialog.is_displayed"(is_displayed) {
       !is_displayed ? this.cleanDialog() : null;
-    },
-
-    async searcher() {
-      this.paginator.current_page = 1;
-      this.items = await this.list({
-        status: this.filter_by_active_items,
-      });
-    },
-    async filter_by_active_items() {
-      this.paginator.current_page = 1;
-      this.items = await this.list({
-        status: this.filter_by_active_items ? 1 : 5,
-      });
-    },
+    }
   },
   computed: {
     gender_sufix() {

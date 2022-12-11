@@ -200,7 +200,6 @@ export default {
     async onChangePage(page) {
       this.paginator.current_page = page;
       this.items = await this.list();
-      console.log("errrrr");
       this.paginator.key++;
     },
     async list() {

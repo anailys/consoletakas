@@ -38,10 +38,13 @@
         <v-row >
         <v-col cols="10" offset="1">
           <v-text-field
+            :append-icon="eye ? 'mdi-eye' : 'mdi-eye-off'"
             label= "Contraseña"
             placeholder="Texto"
+            :type="eye ? 'text' : 'password'"
             outlined
             v-model="modal_form_data.passwordAdmin"
+            @click:append="eye = !eye"
           ></v-text-field> 
         </v-col>
         </v-row>
@@ -83,6 +86,7 @@ export default {
       passwordAdmin: "",
       numberPhoneAdmin: ""
     },
+    eye: false
   }),
   methods: {
     async submit() {     
@@ -92,7 +96,6 @@ export default {
 
     async createUserAdmin() {
       let response = await AuthController.createUserAdmin(this.modal_form_data);
-      console.log("errrr");
       console.log(response);
       if (response.data.status == 200) {
         this.$emit("onCreate", {

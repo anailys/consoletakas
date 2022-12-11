@@ -156,7 +156,7 @@ export default {
         await this.listPqrsUnanswered(false);
       }
       if (this.tableType == "answered") {
-        await this.listPqrsQuejas(false);
+        await this.listPqrsAnswered(false);
       }
       if (this.tableType == "archived") {
         await this.listPqrsArchived(false);
@@ -194,7 +194,7 @@ export default {
         await this.listPqrsUnanswered(true);
       }
       if (this.tableType == "answered") {
-        await this.listPqrsQuejas(true);
+        await this.listPqrsAnswered(true);
       }
       if (this.tableType == "archived") {
         await this.listPqrsArchived(true);
@@ -228,6 +228,7 @@ export default {
       this.paginator.key = 0;
     }
     this.items = await this.listPqrs(36);    
+    this.table.body = this.items;
     this.table.header = [{ text: "Nombre" }, { text: "Correo" }, { text: "Fecha solicitud" },{ text: "Opciones" }];
     this.tableType = "answered";
     },
@@ -236,7 +237,8 @@ export default {
       this.paginator.current_page = 1;
       this.paginator.key = 0;
     }
-    this.items = await this.listPqrs(38);    
+    this.items = await this.listPqrs(38);   
+    this.table.body = this.items; 
     this.table.header = [{ text: "Nombre" }, { text: "Correo" }, { text: "Fecha solicitud" }];    
     this.tableType = "archived";
     },

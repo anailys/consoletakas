@@ -12,10 +12,14 @@
                 outlined
               ></v-text-field>
               <v-text-field
-                v-model="credentials.password"
-                label="Contraseña"
-                outlined
-              ></v-text-field>
+            :append-icon="eye ? 'mdi-eye' : 'mdi-eye-off'"
+            label= "Contraseña"
+            placeholder="Texto"
+            :type="eye ? 'text' : 'password'"
+            outlined
+            v-model="credentials.password"
+            @click:append="eye = !eye"
+          ></v-text-field> 
               <v-btn
                 color="black"
                 :disabled="button_disabled"
@@ -71,7 +75,9 @@ export default {
       is_displayed: false,
       mode: "",
     },
+    eye: false,
   }),
+ 
   components: {
     Loading,
     AppUsersCreateAdmin
@@ -102,7 +108,6 @@ export default {
           group: "general",
           title: "Bienvenido",
         });
-        console.log("ERRROR")
         await Cookies.set("username", this.credentials.username);
         console.log(Cookies.get("username"))
         this.$router.push("/");

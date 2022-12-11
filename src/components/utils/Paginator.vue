@@ -312,13 +312,9 @@ export default {
             );
           }
         }
-        console.log("XXSSSSSSSS");
-        console.log(this.side_buttons.left);
-        console.log(this.side_buttons.right);
       }
     },
     onChangePage(page) {
-      console.log("ERRORRRRRRR");
       console.log(page);
       this.$emit("onChangePage", page);
     },

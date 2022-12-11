@@ -18,7 +18,7 @@
         ></v-text-field>
       </v-col>
       <v-col cols="9" align="right">
-        <v-btn @click="createCode()">Nuevo usuario</v-btn>
+        <v-btn @click="createCode()">Generar código creación</v-btn>
       </v-col>
     </v-row>
 
@@ -75,13 +75,7 @@
           :items-per-page="paginator.items_per_page"
         />
       </v-col>
-    </v-row>
-    <v-dialog>
-      <v-card>
-        <v-card-title> Generar codigo de registro </v-card-title>
-        <v-card-text> </v-card-text>
-      </v-card>
-    </v-dialog>
+    </v-row>   
   </v-container>
 </template>
 
@@ -147,7 +141,6 @@ export default {
       this.auxNewUser.IdUserCreator = _storage.user_id,
       this.auxNewUser.token = _storage.token,
        
-      console.log("errororor");
       console.log(this.auxNewUser);
       AppUsersController.createCode(this.auxNewUser);     
     },
@@ -164,7 +157,9 @@ export default {
     },
     async listUsersAdmins() {
       let response = await AppUsersController.listUsersAdmins(
-        this.paginator
+        this.paginator,
+        this.searcher
+
       );
       if (response.status == 200) {
         console.log(response.data.data);

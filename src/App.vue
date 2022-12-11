@@ -130,7 +130,7 @@ export default {
 
   data: () => ({
     drawer: false,
-    user_name: Cookies.get("username"),
+    user_name: "",
     items: [
       {
         route: "/takas",
@@ -147,8 +147,9 @@ export default {
     ],
   }),
 
-  mounted() {    
-    this.user_name = Cookies.get("username");
+  mounted() {
+    
+    this.user_name ="";
   },
   methods: {
     async logout() {

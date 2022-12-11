@@ -8,12 +8,9 @@ export default {
         let data = {
             "status": params.status ?? 1,
             "items": paginator.items_per_page,
-            "column": "name",
-            "value": search,
             "pag": paginator.current_page
         }
-        let response = await TakasServices.getTopTakastings(data)
-        return response.data.data.top_taksteos.takasteos
+        return await TakasServices.getTopTakastings(data)
     },
 
     async getTopTakastingsForUser(user_id, paginator, search, params) {
@@ -22,8 +19,6 @@ export default {
             "status": params.status ?? 1,
             "user_id": user_id,
             "items": paginator.items_per_page,
-            "column": "name",
-            "value": search,
             "pag": paginator.current_page
         }
         return TakasServices.getTopTakastings(data)

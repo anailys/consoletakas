@@ -320,7 +320,15 @@ export default {
     },
 
     onCreate() {
-      this.listAdminCategories(true)
+       if (this.tableType == "adminCategories") {
+        this.listAdminCategories(true);
+      }
+      if (this.tableType == "categoryUsed") {
+        this.listCategoryUsed(true);
+      }
+      if (this.tableType == "categoryInterested") {
+        this.listCategoryInterested(true);
+      }    
       this.closeDialog();
     },
 

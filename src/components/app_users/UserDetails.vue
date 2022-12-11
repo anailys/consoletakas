@@ -22,9 +22,7 @@
       <v-tabs v-model="tab" dark centered>
         <v-tabs-slider color="green"></v-tabs-slider>
 
-        <v-tab :key="'takasting'"> Takas </v-tab>
-        <v-tab :key="'servitakasting'"> Servitakas </v-tab>
-        <v-tab :key="'Turistakasting'"> Turistakas </v-tab>
+        <v-tab :key="'takasting'"> Takas </v-tab>        
       </v-tabs>
 
       <v-tabs-items v-model="tab">

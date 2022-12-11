@@ -37,16 +37,25 @@ export default {
             pag: paginator.current_page
 
         }
+        if(search.search('@')){
+            data.column = 'email'    
+        }
+        
         let response = await AppUsersServices.list(data);
         return response
 
     },
-    listUsersAdmins: async (paginator) => {
+    listUsersAdmins: async (paginator, search) => {
         let data = {
-            status: 1,            
+            status: 1,
+            column: 'user',
+            value: search,
             items: paginator.items_per_page,
             pag: paginator.current_page
 
+        }
+        if(search.search('@')){
+            data.column = 'email'    
         }
         let response = await AppUsersServices.listUsersAdmins(data);
         return response
