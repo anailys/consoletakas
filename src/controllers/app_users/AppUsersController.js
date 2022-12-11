@@ -20,8 +20,13 @@ export default {
             phone: app_user.phonenumber
         }
     },
-    create: () => {
-        AppUsersServices.create();
+    createCode: (auxNewUser) => {
+        let data = {
+            IdUserCreator: auxNewUser.IdUserCreator,
+            Privilegio: auxNewUser.Privilegio,
+            token: auxNewUser.token
+        }
+        return AppUsersServices.createCode(data);
     },
     list: async (paginator, search) => {
         let data = {
@@ -33,6 +38,17 @@ export default {
 
         }
         let response = await AppUsersServices.list(data);
+        return response
+
+    },
+    listUsersAdmins: async (paginator) => {
+        let data = {
+            status: 1,            
+            items: paginator.items_per_page,
+            pag: paginator.current_page
+
+        }
+        let response = await AppUsersServices.listUsersAdmins(data);
         return response
 
     },

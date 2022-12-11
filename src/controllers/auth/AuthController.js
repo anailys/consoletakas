@@ -3,19 +3,10 @@ import { useAuthStore } from "../../store/auth/AuthStore"
 //import jwt_decode from "jwt-decode"
 
 export default {
-  users: {
-    async createUser(user) {
+ 
+  async createUserAdmin(modal_form_data) {
+    return await AuthServices.createUserAdmin(modal_form_data);   
 
-
-      try {
-
-        let response = await AuthServices.users.createUser(user.logged_user_id, user.rol);
-        console.log(response)
-      } catch (e) {
-        console.log(e.response)
-      }
-
-    }
   },
   validateCredentials: (credentials) => {
 

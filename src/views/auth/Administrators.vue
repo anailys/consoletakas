@@ -18,7 +18,7 @@
         ></v-text-field>
       </v-col>
       <v-col cols="9" align="right">
-        <v-btn @click="createUser">Nuevo usuario</v-btn>
+        <v-btn @click="createCode()">Nuevo usuario</v-btn>
       </v-col>
     </v-row>
 
@@ -43,7 +43,7 @@
               :key="'row_' + i"
             >
               <td>
-                {{ item.fullname }}
+                {{ item.user }}
               </td>
               <td>
                 {{ item.email }}
@@ -89,10 +89,10 @@
 /*import AppUsersForm from "../../components/app_users/AppUsersCreateUpdateForm";*/
 /*import ConfirmDialog from "../../components/ConfirmDialog.vue";*/
 import AppUsersController from "../../controllers/app_users/AppUsersController";
-import { useAuthStore } from "../../store/auth/AuthStore"
 /*import Dropdown from "../../components/dropdowns/Drowdown-1.vue";*/
 import Paginator from "../../components/utils/Paginator";
 import PaginatorInfo from "../../components/utils/PaginatorInfo.vue";
+import StorageController from "../../controllers/StorageController";
 /*import UserDetails from "../../components/app_users/UserDetails.vue";*/
 
 export default {
@@ -118,7 +118,12 @@ export default {
       plural_name: "Usuarios Admin",
       singular_name: "Usuario admin",
       gender_title: "male",
-    },
+    },    
+    auxNewUser: {
+      IdUserCreator: "",
+      Privilegio: "Admin",
+      token: ""
+      },
     dialog: {
       is_displayed: false,
       mode: "",
@@ -129,22 +134,22 @@ export default {
       { text: "Nombre" },
       { text: "Email" },
       { text: "Estado" },
-    ],
+    ]
   }),
   async mounted() {
-    this.items = await this.list();
+    this.items = await this.listUsersAdmins();
     console.log(this.items);
   },
   methods: {
-    async createUser() {
-      this.new_user.rol = "Admin";
-      let store = await useAuthStore().getAuth();
-      let aux_new_user = {
-        logged_user_id: store.user_id,
-        rol: this.new_user.rol,
-      };
-
-      AppUsersController.users.createUser(aux_new_user);
+    async createCode() {
+ 
+      let _storage = await StorageController.useStorage("auth");
+      this.auxNewUser.IdUserCreator = _storage.user_id,
+      this.auxNewUser.token = _storage.token,
+       
+      console.log("errororor");
+      console.log(this.auxNewUser);
+      AppUsersController.createCode(this.auxNewUser);     
     },
 
     showAppUserInfo(item) {
@@ -154,13 +159,12 @@ export default {
     },
     async onChangePage(page) {
       this.paginator.current_page = page;
-      /*this.items = await this.list();*/
+      this.items = await this.listUsersAdmins();
       this.paginator.key++;
     },
-    async list() {
-      let response = await AppUsersController.list(
-        this.paginator,
-        this.searcher
+    async listUsersAdmins() {
+      let response = await AppUsersController.listUsersAdmins(
+        this.paginator
       );
       if (response.status == 200) {
         console.log(response.data.data);
@@ -169,7 +173,7 @@ export default {
         this.paginator.total_items = response.data.data.total_items;
         this.paginator.total_pages = response.data.data.total_pages;
         this.paginator.key++;
-        return response.data.data.list_users.filter(user => user.role == 1);
+        return response.data.data.list_categorys;
       } else {
         console.log(response);
         alert("Ha ocurrido un error inesperado");
@@ -220,7 +224,7 @@ export default {
     },
     async searcher() {
       this.paginator.current_page = 1;
-      this.items = await this.list();
+      this.items = await this.listUsersAdmins();
     },
   },
   computed: {

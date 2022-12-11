@@ -23,17 +23,35 @@
               >
                 <span class="green-text">Entrar</span>
               </v-btn>
+              <v-btn
+                color="black"
+                :disabled="button_disabled"
+                @click="createItem()"
+              >
+                <span class="green-text">registrarse</span>
+              </v-btn>
             </form>
           </v-card-text>
         </v-card>
       </v-col>
     </v-row>
     <Loading v-if="loading" />
+    <v-dialog v-model="dialog.is_displayed" width="500">
+      <AppUsersCreateAdmin
+        v-if="dialog.mode == 'create'"       
+        @onCreate="onCreate"        
+      />
+      <ConfirmDialog
+        v-if="dialog.mode == 'confirm'"
+        @on:answer="deleteItem"
+        :message="'¿Realmente desea eliminarl' + gender_sufix + '?'"
+      />
+    </v-dialog>
   </v-container>
 </template>
 <script>
 import Loading from "../../components/Loading.vue";
-
+import AppUsersCreateAdmin from "../../components/app_users/AppUsersCreateAdmin";
 import AuthController from "../../controllers/auth/AuthController";
 import Cookies from "js-cookie";
 
@@ -49,9 +67,14 @@ export default {
     },
     button_disabled: false,
     loading: false,
+    dialog: {
+      is_displayed: false,
+      mode: "",
+    },
   }),
   components: {
     Loading,
+    AppUsersCreateAdmin
   },
   mounted() {},
   methods: {
@@ -94,6 +117,30 @@ export default {
         this.loading = false;
       }
     },
+    async createItem() {
+      this.openDialog("create");     
+    },
+    onCreate() {
+      this.$notify({
+          type: "takas",
+          group: "general",
+          title: "Usuario creado",
+        });
+      this.closeDialog();
+    },
+    openDialog(mode) {
+      this.dialog.is_displayed = true;
+      this.dialog.mode = mode;
+    },
+
+    closeDialog() {
+      this.dialog.is_displayed = false;
+      this.dialog.mode = "";
+    },
+    cleanDialog() {
+      this.selected_item = {};
+      this.dialog.mode = "";
+    }
   },
 };
 </script>

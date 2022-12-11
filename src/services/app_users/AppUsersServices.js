@@ -2,11 +2,13 @@ import { Http } from '../AppServices'
 
 export default {
 
-    create: async (data) => {
-        data;
-        alert('create')
-
-        //return await Http.post({ route: '/', data: {} })
+    createCode: async (data) => {
+        let response = await Http.post({
+            route: '/admin/createcode?access_token=' +  data.token,
+            data: data
+        })
+        alert("El codigo para la creacion de nuevo usuario es : " +  response.data.code)
+        
     },
     list: async (data) => {
 
@@ -14,10 +16,14 @@ export default {
             route: '/admin/listusersconsole', data: data
         })
         return response
-
-
     },
+    listUsersAdmins: async (data) => {
 
+        let response = await Http.post({
+            route: '/admin/usersadminlist', data: data
+        })
+        return response        
+    },
     find: async (data) => {
 
         data;
