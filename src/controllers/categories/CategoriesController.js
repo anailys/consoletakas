@@ -8,7 +8,7 @@ export default {
         let post_data = {
             name: form_data.name,
             TypeP: 1,
-            icon: 'https://n9.cl/c1z78',
+            icon: form_data.icon,
         }
 
         return await CategoriesServices.create(post_data);
@@ -17,12 +17,33 @@ export default {
 
     },
 
-    list: async () => {
+    list: async (status, paginator, searcher) => {
         let data = {
-            TypeP: 1,
-            StatusP: 35
+            "status": status,
+            "items": paginator.items_per_page,
+            "column": "namec",
+            "value"  : searcher,
+            "pag":paginator.current_page
         }
         return await CategoriesServices.list(data);
+
+    },
+
+    listCategoryUsed: async (paginator) => {
+        let data = {           
+            "items": paginator.items_per_page,
+            "pag":paginator.current_page
+        }
+        return await CategoriesServices.listCategoryUsed(data);
+
+    },
+
+    listCategoryInterested: async (paginator) => {
+        let data = {           
+            "items": paginator.items_per_page,
+            "pag":paginator.current_page
+        }
+        return await CategoriesServices.listCategoryInterested(data);
 
     },
     findBy: () => {
@@ -42,7 +63,7 @@ export default {
             idC: form_data.id,
             nameC: form_data.name,
             typePC: 1,
-            iconC: 'https://n9.cl/c1z78',
+            iconC: form_data.icon,
 
         }
 

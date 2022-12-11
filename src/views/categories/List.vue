@@ -7,25 +7,35 @@
     </v-row>
 
     <v-row>
-      <v-col cols="6">
+      <v-col cols="3">
         <v-text-field
+          
+          v-model="searcher"
           background-color="white"
           :label="'Buscar ' + module_config.singular_name.toLowerCase()"
           rounded
           filled
           dense
+          :disabled="tableType != 'adminCategories'"
+          
         ></v-text-field>
       </v-col>
-      <v-col cols="6" align="right">
-        <!--v-btn @click="openDialog('create')"
-          >Nuev{{ gender_sufix }}
-          {{ module_config.singular_name.toLowerCase() }}</v-btn
-        -->
+      <v-col cols="9" align="right">
+        <v-btn @click="createItem()">crear categoria</v-btn>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col cols="12" align="center">
+        <v-tabs >
+                  <v-tab  @click="listAdminCategories(true)">Administrar categorias</v-tab>
+                  <v-tab  @click="listCategoryUsed(true)">Más usados</v-tab>
+                  <v-tab  @click="listCategoryInterested(true)">Más interesados</v-tab>
+                </v-tabs>
       </v-col>
     </v-row>
 
     <v-row>
-      <v-col cols="12" md="8">
+      <v-col cols="8" offset="2">
         <v-card class="background-one">
           <v-card-title class="justify-center">
             <h3 class="white--text">Categorías de la app</h3>
@@ -43,9 +53,9 @@
                   </th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody v-if="tableType == 'adminCategories'">
                 <tr
-                  class="text-center"
+                  class="text-center"                 
                   v-for="(body, i) in table.body"
                   :key="'row_' + i"
                 >
@@ -78,78 +88,50 @@
                   </td>
                 </tr>
               </tbody>
+              <tbody v-if="tableType == 'categoryUsed' || tableType == 'categoryInterested'">
+                <tr
+                  class="text-center"                 
+                  v-for="(body, i) in table.body"
+                  :key="'row_' + i"
+                >
+                  <td>
+                    {{ body.name }}
+                  </td>
+                  <td>
+                    {{ body.namec }}
+                  </td>
+                  <td v-if="tableType == 'categoryUsed'">
+                    {{ body.category }}
+                  </td>
+                  <td>
+                    {{ body.subcategory }}
+                  </td>
+                  <td>
+                    {{ body.cant_row }}
+                  </td>                  
+                </tr>
+              </tbody>
             </v-simple-table>
           </v-card-text>
         </v-card>
       </v-col>
-      <v-col cols="12" md="4">
-        <v-row>
-          <v-col cols="12">
-            <v-card class="background-one">
-              <v-card-title
-                ><h4 class="font-weight-bold white--text">
-                  Categorías mas usadas
-                </h4></v-card-title
-              >
-              <v-divider></v-divider>
-              <v-card-text>
-                <v-simple-table dark class="background-one white--text">
-                  <template v-slot:default>
-                    <thead>
-                      <tr>
-                        <th class="white--text text-center">Nombre</th>
-                        <th class="white--text text-center">Me interesa</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr
-                        v-for="(item, i) in most_used_categories"
-                        :key="'interested_' + i"
-                        class="text-center"
-                      >
-                        <td>{{ item.name }}</td>
-                        <td>{{ item.uses }}</td>
-                      </tr>
-                    </tbody>
-                  </template>
-                </v-simple-table>
-              </v-card-text>
-            </v-card>
-          </v-col>
-          <v-col cols="12">
-            <v-card class="background-one">
-              <v-card-title
-                ><h4 class="font-weight-bold white--text">
-                  Categorías mas interesadas
-                </h4></v-card-title
-              >
-              <v-divider></v-divider>
-              <v-card-text>
-                <v-simple-table dark class="background-one white--text">
-                  <template v-slot:default>
-                    <thead>
-                      <tr>
-                        <th class="white--text text-center">Nombre</th>
-                        <th class="white--text text-center">Me interesa</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr
-                        v-for="(item, i) in most_interested_categories"
-                        :key="'interested_' + i"
-                        class="text-center"
-                      >
-                        <td>{{ item.name }}</td>
-                        <td>{{ item.interested }}</td>
-                      </tr>
-                    </tbody>
-                  </template>
-                </v-simple-table>
-              </v-card-text>
-            </v-card>
-          </v-col>
-        </v-row>
+      <v-col offset-md="2" cols="8" class="d-flex justify-center align-center">
+      
+        <PaginatorInfo :paginator="paginator" :key="paginator.key" />
       </v-col>
+      <v-col offset-md="2" cols="8" class="d-flex justify-center align-center">
+        <Paginator
+          class="mt-1"
+          @onChangePage="onChangePage"
+          :key="paginator.key"
+          :total-items="paginator.total_items"
+          :max-buttons="paginator.max_buttons"
+          :current-page="paginator.current_page"
+          :total-pages="paginator.total_pages"
+          :items-per-page="paginator.items_per_page"
+        />
+      </v-col>
+    
     </v-row>
     <v-dialog v-model="dialog.is_displayed" width="500">
       <CategoriesForm
@@ -176,9 +158,11 @@
 import CategoriesForm from "../../components/categories/CreateUpdateForm";
 import ConfirmDialog from "../../components/ConfirmDialog.vue";
 import CategoriesController from "../../controllers/categories/CategoriesController";
+import PaginatorInfo from "../../components/utils/PaginatorInfo.vue";
+import Paginator from "../../components/utils/Paginator";
 
 export default {
-  components: { CategoriesForm, ConfirmDialog },
+  components: { CategoriesForm, ConfirmDialog, PaginatorInfo,Paginator},
   data: () => ({
     module_config: {
       plural_name: "Categorías",
@@ -192,74 +176,63 @@ export default {
     items: [],
     selected_item: {},
     table: {
-      header: [{ text: "Nombre" }, { text: "Estado" }, { text: "Opciones" }],
+      header: [],
       body: {},
     },
-    most_interested_categories: [
-      {
-        name: "Deportes",
-        interested: "5",
-      },
-      {
-        name: "Ropa",
-        interested: "88",
-      },
-      {
-        name: "Accesorios",
-        interested: "32",
-      },
-      {
-        name: "Joyería",
-        interested: "25",
-      },
-      {
-        name: "Automoviles",
-        interested: "57",
-      },
-      {
-        name: "Juguetes",
-        interested: "62",
-      },
-    ],
-    most_used_categories: [
-      {
-        name: "Deportes",
-        uses: "5",
-      },
-      {
-        name: "Ropa",
-        uses: "88",
-      },
-      {
-        name: "Accesorios",
-        uses: "32",
-      },
-      {
-        name: "Joyería",
-        uses: "25",
-      },
-      {
-        name: "Automoviles",
-        uses: "57",
-      },
-      {
-        name: "Juguetes",
-        uses: "62",
-      },
-    ],
+    tableType : "",
     key_of_item_to_delete: -1,
+    paginator: {
+      key: 0,
+      total_items: -1,
+      max_buttons: 1,
+      current_page: 1,
+      total_pages: -1,
+      items_per_page: 5,
+    },
+    searcher: "",
+    status:1,
+    
+    filter_by_active_items: true,
+    
   }),
 
   async mounted() {
     this.items = await this.list();
     this.table.body = this.items;
+    this.table.header = [{ text: "Nombre" }, { text: "Estado" }, { text: "Opciones" }];
+    this.tableType = "adminCategories";
+    
   },
   methods: {
+    async onChangePage(page) {
+      this.paginator.current_page = page;
+      
+      if (this.tableType == "adminCategories") {
+        await this.listAdminCategories(false);
+      }
+      if (this.tableType == "categoryUsed") {
+        await this.listCategoryUsed(false);
+      }
+      if (this.tableType == "categoryInterested") {
+        await this.listCategoryInterested(false);
+      }    
+      
+    },
+
     async list() {
-      let req = await CategoriesController.list();
-      if (req.status == 200) {
-        console.log(req.data.data);
-        return req.data.data;
+      let response = await CategoriesController.list(
+        this.status,
+        this.paginator,
+        this.searcher
+      );
+      if (response.status == 200) {
+        console.log(response.data.data);
+        this.paginator.current_page = response.data.data.current_page;
+        this.paginator.items_per_page = response.data.data.items_per_page;
+        this.paginator.total_items = response.data.data.total_items;
+        this.paginator.total_pages = response.data.data.total_pages;
+        this.paginator.key = response.data.data.current_page;
+        return response.data.data.list_categorys;
       }
     },
     confirmDeleteItem(i) {
@@ -283,7 +256,59 @@ export default {
       this.selected_item = this.items[i];
       this.selected_item.key = i;
     },
-
+    async createItem() {
+      this.openDialog("create");     
+    },
+    async listAdminCategories(isRestartPaging) {
+      if(isRestartPaging == true){
+      this.paginator.current_page = 1;
+      this.paginator.key = 0;
+    }
+      this.items = await this.list();
+    this.table.body = this.items;
+    this.table.header = [{ text: "Nombre" }, { text: "Estado" }, { text: "Opciones" }];
+    this.tableType = "adminCategories";
+    },
+    async listCategoryUsed(isRestartPaging) {
+      if(isRestartPaging == true){
+      this.paginator.current_page = 1;
+      this.paginator.key = 0;
+    }
+      let response = await CategoriesController.listCategoryUsed(      
+        this.paginator
+      );
+      if (response.status == 200) {
+        console.log(response.data.data);
+        this.paginator.current_page = response.data.data.current_page;
+        this.paginator.items_per_page = response.data.data.items_per_page;
+        this.paginator.total_items = response.data.data.total_items;
+        this.paginator.total_pages = response.data.data.total_pages;
+        this.paginator.key = response.data.data.current_page;        
+      }
+    this.table.body = response.data.data.list_categorys;
+    this.table.header = [{ text: "Nombre" }, { text: "nombrec" }, { text: "N° Categoria" }, { text: "N° Subcategoria" }, { text: "Cantidad" }];
+    this.tableType = "categoryUsed";
+    },
+    async listCategoryInterested(isRestartPaging) {
+      if(isRestartPaging == true){
+      this.paginator.current_page = 1;
+      this.paginator.key = 0;
+    }
+      let response = await CategoriesController.listCategoryInterested(
+        this.paginator
+      );
+      if (response.status == 200) {
+        console.log(response.data.data);
+        this.paginator.current_page = response.data.data.current_page;
+        this.paginator.items_per_page = response.data.data.items_per_page;
+        this.paginator.total_items = response.data.data.total_items;
+        this.paginator.total_pages = response.data.data.total_pages;
+        this.paginator.key = response.data.data.current_page;        
+      }
+    this.table.body = response.data.data.list_categorys;
+    this.table.header = [{ text: "Nombre" }, { text: "nombrec" },  { text: "N° Subcategoria" }, { text: "Cantidad" }];
+    this.tableType = "categoryInterested";
+    },
     openDialog(mode) {
       this.dialog.is_displayed = true;
       this.dialog.mode = mode;
@@ -294,8 +319,8 @@ export default {
       this.dialog.mode = "";
     },
 
-    onCreate(created_item) {
-      this.items.push(created_item);
+    onCreate() {
+      this.listAdminCategories(true)
       this.closeDialog();
     },
 
@@ -308,12 +333,16 @@ export default {
     cleanDialog() {
       this.selected_item = {};
       this.dialog.mode = "";
-    },
+    }
   },
   watch: {
     "dialog.is_displayed"(is_displayed) {
       !is_displayed ? this.cleanDialog() : null;
     },
+    async searcher() {
+      await this.listAdminCategories(true);
+    }
+
   },
   computed: {
     gender_sufix() {

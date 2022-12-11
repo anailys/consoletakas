@@ -1,46 +1,3 @@
-<script>
-import AuthController from "./controllers/auth/AuthController";
-import Cookies from "js-cookie";
-export default {
-  name: "App",
-
-  data: () => ({
-    drawer: false,
-    user_name: Cookies.get("username"),
-    items: [
-      {
-        route: "/takas",
-        name: "Takas",
-      },
-       {
-        route: "/administration/PQRS",
-        name: "PQRS",
-      },
-      {
-        route: "/administration/categories",
-        name: "Categorías",
-      },
-    ],
-  }),
-
-  mounted() {
-    
-    this.user_name = Cookies.get("username");
-  },
-  methods: {
-    async logout() {
-      this.$notify({
-        type: "takas",
-        group: "general",
-        title: "Hasta luego",
-      });
-      await AuthController.logout();    
-      await Cookies.remove('username');  
-      this.$router.push("/login");
-    },
-  },
-};
-</script>
 <template>
   <v-app>
     <v-app-bar app color="#05171D" dark v-if="!$route.meta.app_bar_is_hidden">
@@ -165,7 +122,48 @@ export default {
   }
 }
 </style>
+<script>
+import AuthController from "./controllers/auth/AuthController";
+import Cookies from "js-cookie";
+export default {
+  name: "App",
 
+  data: () => ({
+    drawer: false,
+    user_name: Cookies.get("username"),
+    items: [
+      {
+        route: "/takas",
+        name: "Takas",
+      },
+       {
+        route: "/administration/PQRS",
+        name: "PQRS",
+      },
+      {
+        route: "/administration/categories",
+        name: "Categorías",
+      },
+    ],
+  }),
+
+  mounted() {    
+    this.user_name = Cookies.get("username");
+  },
+  methods: {
+    async logout() {
+      this.$notify({
+        type: "takas",
+        group: "general",
+        title: "Hasta luego",
+      });
+      await AuthController.logout();    
+      Cookies.remove('username');  
+      this.$router.push("/login");
+    },
+  },
+};
+</script>
 <style>
 .green-text {
   color: #39fe14;

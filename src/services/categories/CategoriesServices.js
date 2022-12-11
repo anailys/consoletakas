@@ -10,10 +10,19 @@ export default {
 
     list: async (data) => {
 
-        return await Http.post({ route: '/admin/listcategorys', data: data })
+        return await Http.post({ route: '/admin/categorylist', data: data })
 
     },
+    listCategoryUsed: async (data) => {
 
+        return await Http.post({ route: '/admin/topcategorypublications', data: data })
+
+    },
+    listCategoryInterested: async (data) => {
+
+        return await Http.post({ route: '/admin/topcategoryinterested', data: data })
+
+    },
     findBy: async (data) => {
 
         data;

@@ -6,9 +6,9 @@
     </v-card-title>
     <v-divider class="mb-8"> </v-divider>
     <v-card-text>
-      <v-row>
+      <v-row v-if = "this.dialog.mode != 'create'">
         <v-col cols="10" offset="1">
-          <v-switch
+          <v-switch          
             v-model="modal_form_data.status"
             :label="
               modal_form_data.status == 1
@@ -17,7 +17,6 @@
             "
           ></v-switch></v-col
       ></v-row>
-
       <v-row>
         <v-col cols="10" offset="1">
           <v-text-field
@@ -26,11 +25,22 @@
               (this.moduleConfig.gender_title == 'male' ? 'del ' : 'de la ') +
               this.moduleConfig.singular_name.toLowerCase()
             "
-            placeholder="Placeholder"
+            placeholder="Texto"
             outlined
             v-model="modal_form_data.name"
-          ></v-text-field> </v-col
-      ></v-row>
+          ></v-text-field> 
+        </v-col>
+        </v-row>
+        <v-row v-if = "this.dialog.mode == 'create'">
+        <v-col cols="10" offset="1">
+          <v-text-field
+            label= "Url del icono"
+            placeholder="Texto"
+            outlined
+            v-model="modal_form_data.icon"
+          ></v-text-field> 
+        </v-col>
+        </v-row>
 
       <v-row>
         <v-col cols="12">
@@ -60,6 +70,7 @@ export default {
       id: 0,
       name: "",
       status: 1,
+      icon: ""
     },
   }),
   mounted() {
@@ -69,6 +80,7 @@ export default {
       this.modal_form_data.name = this.selected_item.namec;
       this.modal_form_data.status = this.selected_item.status;
       this.modal_form_data.id = this.selected_item.id;
+      this.modal_form_data.icon = this.selected_item.iconc;
     }
   },
   methods: {
@@ -84,13 +96,7 @@ export default {
       let req = await CategoriesController.create(this.modal_form_data);
       console.log(req);
       if (req.status == 200) {
-        alert(
-          "el response no trae el id del registro creado. se necesita para agregar el nuevo registro a la tabla"
-        );
         this.$emit("onCreate", {
-          //id: this.req.data.id,
-          namec: this.modal_form_data.name,
-          status: this.modal_form_data.status,
         });
       } else {
         alert("notificar error");

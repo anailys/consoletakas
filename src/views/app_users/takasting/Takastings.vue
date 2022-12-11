@@ -116,7 +116,7 @@ export default {
     paginator: {
       key: 0,
       total_items: -1,
-      max_buttons: 3,
+      max_buttons: 1,
       current_page: 1,
       total_pages: -1,
       items_per_page: 5,
@@ -158,7 +158,7 @@ export default {
     async onChangePage(page) {
       this.paginator.current_page = page;
       this.items = await this.getUserTakastings({
-        status: this.filter_by_active_items ? 1 : 5,
+      status: this.filter_by_active_items ? 1 : 5,
     });
       this.paginator.key++;
     },

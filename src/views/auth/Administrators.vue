@@ -7,7 +7,7 @@
     </v-row>
 
     <v-row>
-      <v-col cols="6">
+      <v-col cols="3">
         <v-text-field
         v-model="searcher"
           background-color="white"
@@ -17,7 +17,7 @@
           dense
         ></v-text-field>
       </v-col>
-      <v-col cols="6" align="right">
+      <v-col cols="9" align="right">
         <v-btn @click="createUser">Nuevo usuario</v-btn>
       </v-col>
     </v-row>
@@ -108,7 +108,7 @@ export default {
     paginator: {
       key: 0,
       total_items: -1,
-      max_buttons: 3,
+      max_buttons: 1,
       current_page: 1,
       total_pages: -1,
       items_per_page: 5,

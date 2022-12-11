@@ -1,4 +1,4 @@
-//import { Http } from '../AppServices'
+import { Http } from '../AppServices'
 
 export default {
 
@@ -29,5 +29,24 @@ export default {
         alert('update')
 
         //return await Http.post({ route: '/', data: {} })
+    },
+
+    listPqrs: async (data) => {
+
+        return await Http.post({ route: '/admin/pqrslist', data: data })
+
+        
+    },
+    Archived: async (data) => {
+
+        return await Http.post({ route: '/admin/deletepqrs', data: data })
+       
+    },
+
+    responsePqrs: async (data) => {
+
+        return await Http.post({ route: '/admin/responsepqrs', data: data })
+       
     }
+    
 }
