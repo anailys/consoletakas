@@ -134,7 +134,7 @@ export default {
     },
     async onChangePage(page) {
       this.paginator.current_page = page;
-      this.items = await this.list();
+      this.items = await this.getTopTakastings({ status: 1 });
       this.paginator.key++;
     },
     
