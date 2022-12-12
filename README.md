@@ -1,4 +1,4 @@
-# takas_web_console
+# consoletakas
 
 ## Project setup
 ```

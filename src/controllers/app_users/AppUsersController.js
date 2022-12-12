@@ -37,7 +37,7 @@ export default {
             pag: paginator.current_page
 
         }
-        if(search.search('@')){
+        if(search.search('@') != -1){
             data.column = 'email'    
         }
         
@@ -54,7 +54,7 @@ export default {
             pag: paginator.current_page
 
         }
-        if(search.search('@')){
+        if(search.search('@') != -1){
             data.column = 'email'    
         }
         let response = await AppUsersServices.listUsersAdmins(data);

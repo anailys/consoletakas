@@ -83,7 +83,7 @@ export default {
       max_buttons: 1,
       current_page: 1,
       total_pages: -1,
-      items_per_page: 2,
+      items_per_page: 5,
     },
     searcher: "",
     filter_by_active_items: true,
