@@ -1,47 +1,47 @@
 import axios from 'axios'
 
-const API_URL = process.env.NODE_ENV == 'production' ? process.env.VUE_APP_API_URL : 'http://takas-300716.uk.r.appspot.com'
+const API_URL = process.env.NODE_ENV == 'production' ? process.env.VUE_APP_API_URL : 'https://takas-300716.uk.r.appspot.com'
 
 export const AppServices = {
 
     add: async (params) => {
         return await axios.post(
-            process.env.NODE_ENV == 'production' ? process.env.VUE_APP_API_URL : 'http://takas-300716.uk.r.appspot.com' + params.route,
+            process.env.NODE_ENV == 'production' ? process.env.VUE_APP_API_URL : 'https://takas-300716.uk.r.appspot.com' + params.route,
             params.data,
             { headers: params.headers }
         )
     },
     find: async (params) => {
         return await axios.get(
-            process.env.NODE_ENV == 'production' ? process.env.VUE_APP_API_URL : 'http://takas-300716.uk.r.appspot.com' + params.route + '/' + params.id,
+            process.env.NODE_ENV == 'production' ? process.env.VUE_APP_API_URL : 'https://takas-300716.uk.r.appspot.com' + params.route + '/' + params.id,
             {},
             { headers: params.headers }
         )
     },
     update: async (params) => {
         return await axios.put(
-            process.env.NODE_ENV == 'production' ? process.env.VUE_APP_API_URL : 'http://takas-300716.uk.r.appspot.com' + '/' + params.route + '/' + params.id,
+            process.env.NODE_ENV == 'production' ? process.env.VUE_APP_API_URL : 'https://takas-300716.uk.r.appspot.com' + '/' + params.route + '/' + params.id,
             params.data,
             { headers: params.headers }
         )
     },
     delete: async (params) => {
         return await axios.delete(
-            process.env.NODE_ENV == 'production' ? process.env.VUE_APP_API_URL : 'http://takas-300716.uk.r.appspot.com' + params.route + '/' + params.id,
+            process.env.NODE_ENV == 'production' ? process.env.VUE_APP_API_URL : 'https://takas-300716.uk.r.appspot.com' + params.route + '/' + params.id,
             params.data,
             { headers: params.headers }
         )
     },
     list: async (params) => {
         return await axios.get(
-            process.env.NODE_ENV == 'production' ? process.env.VUE_APP_API_URL : 'http://takas-300716.uk.r.appspot.com' + params.route + '/page',
+            process.env.NODE_ENV == 'production' ? process.env.VUE_APP_API_URL : 'https://takas-300716.uk.r.appspot.com' + params.route + '/page',
             params.data,
             { headers: params.headers }
         )
     },
     search: async (params) => {
         return await axios.get(
-            process.env.NODE_ENV == 'production' ? process.env.VUE_APP_API_URL : 'http://takas-300716.uk.r.appspot.com' + params.route + '/search',
+            process.env.NODE_ENV == 'production' ? process.env.VUE_APP_API_URL : 'https://takas-300716.uk.r.appspot.com' + params.route + '/search',
             params.data,
             { headers: params.headers }
         )
